@@ -28,12 +28,8 @@ class WebhooksController < ApplicationController
       
       puts 'PaymentIntent succeeded'
       @submission = Submission.find_by!(stripe_payment_id: payment_intent.id)
-      puts "Submission found: #{@submisison.title}"
+      puts "Submission found: #{@submission.title}"
 
-    when 'payment_method.attached'
-      payment_method = event.data.object # contains a Stripe::PaymentMethod
-      puts 'PaymentMethod was attached to a Customer!'
-    # ... handle other event types
     else
       puts "Unhandled event type: #{event.type}"
     end
