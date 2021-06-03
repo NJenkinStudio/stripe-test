@@ -58,3 +58,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # developer added gems
 gem 'devise'
 gem 'devise-bootstrap-views', '~> 1.0'
+
+gem 'stripe'
+gem 'annotate'
+gem 'pry-rails'

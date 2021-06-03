@@ -1,0 +1,85 @@
+<h1>Create a New Submisison</h1>
+
+<%= form_with model: @submission, id: 'new_submission' do |f| %>
+  <div class="form-group">
+    <label for="title">Title</label>
+    <%= f.text_field :title, class: 'form-control' %>
+    <%= hidden_field(:submission, :stripe_payment_id, id: "payment" ) %>
+  </div>
+  
+  <div class="field">
+    <div id="card"></div>
+  </div>
+
+  <%= f.submit 'Create Submission', class: "btn btn-primary" %>
+<% end %>
+
+<script charset="utf-8">
+  var stripe = Stripe('<%= Rails.application.credentials.stripe[:public_key] %>');
+
+  var fonts = [{
+    cssSrc: "https://fonts.googleapis.com/css?family=Karla",
+  }];
+
+  var styles = {
+    base: {
+      iconColor: "#cccccc",
+      color: "#000",
+      fontFamily: "MonumentGroteskTrial-Regular",
+      fontSize: "16px",
+
+      "::placeholder": {
+        color: "#ccc"
+      },
+      ":-webkit-autofill": {
+        color: "#ccc"
+      }
+    },
+    invalid: {
+      iconColor: "#FFC7EE",
+      color: "#A31621"
+    }
+  }
+
+  var elements = stripe.elements();
+  var cardElement = elements.create('card', {style: styles});
+  cardElement.mount('#card')
+
+  const form = document.querySelector('#new_submission');
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // post request to create payment intent
+    fetch('/payment_intents', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        authenticity_token: '<%= form_authenticity_token %>',
+      }),
+    })
+    .then((response) => response.json())
+    .then((paymentIntent) => {
+      // Step 2: create payment method and confirm payment intent
+      stripe.confirmCardPayment(
+        paymentIntent.client_secret, {
+          payment_method: {
+            card: cardElement
+          }
+        }
+      ).then((resp) => {
+        if(resp.error) {
+          alert(resp.error.message);
+        } else {
+          // step 3 embed payment id in form
+          const paymentIdInput = document.querySelector('#payment');
+          paymentIdInput.value = paymentIntent.id
+          form.submit();
+        }
+      })
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    })
+  });
+</script>
