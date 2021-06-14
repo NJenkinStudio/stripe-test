@@ -6,6 +6,7 @@ class PaymentIntentsController < ApplicationController
       description: 'Order',
       statement_descriptor: 'TimeSink submit',
     )
+    # byebug
     render json: {
       id: payment_intent.id,
       client_secret: payment_intent.client_secret

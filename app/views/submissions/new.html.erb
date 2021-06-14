@@ -1,18 +1,19 @@
 <h1>Create a New Submisison</h1>
+<div class="col-6">
+  <%= form_with model: @submission, id: 'new_submission' do |f| %>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <%= f.text_field :title, class: 'form-control' %>
+      <%= hidden_field(:submission, :stripe_payment_id, id: "payment" ) %>
+    </div>
+    
+    <div class="field">
+      <div id="card"></div>
+    </div>
 
-<%= form_with model: @submission, id: 'new_submission' do |f| %>
-  <div class="form-group">
-    <label for="title">Title</label>
-    <%= f.text_field :title, class: 'form-control' %>
-    <%= hidden_field(:submission, :stripe_payment_id, id: "payment" ) %>
-  </div>
-  
-  <div class="field">
-    <div id="card"></div>
-  </div>
-
-  <%= f.submit 'Create Submission', class: "btn btn-primary" %>
-<% end %>
+    <%= f.submit 'Buy Course', class: "btn btn-outline-primary btn-sm" %>
+  <% end %>
+</div>
 
 <script charset="utf-8">
   var stripe = Stripe('<%= Rails.application.credentials.stripe[:public_key] %>');
@@ -23,10 +24,10 @@
 
   var styles = {
     base: {
-      iconColor: "#cccccc",
-      color: "#000",
-      fontFamily: "MonumentGroteskTrial-Regular",
-      fontSize: "16px",
+      iconColor: "#ae86e9c2",
+      color: "#611eb8",
+      fontFamily: "Avenir Next",
+      fontSize: "18px",
 
       "::placeholder": {
         color: "#ccc"
